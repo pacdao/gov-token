@@ -28,7 +28,6 @@ decimals: public(uint256)
 totalSupply: public(uint256)
 
 last_mint_time: HashMap[address, uint256]
-mint_window: public(uint256) 
 owner: address
 
 balances: HashMap[address, uint256]
@@ -41,7 +40,6 @@ def __init__(_name: String[64], _symbol: String[32], _decimals: uint256, _total_
     self.decimals = _decimals
     self.balances[msg.sender] = _total_supply
     self.totalSupply = _total_supply
-    self.mint_window = 24 * 60 * 60
     self.owner = _owner
     log Transfer(ZERO_ADDRESS, msg.sender, _total_supply)
 
@@ -107,11 +105,9 @@ def transfer(_to : address, _value : uint256) -> bool:
     @param _value The amount to be transferred
     @return Success boolean
     """
-    if _to == self.owner:
-            self._transfer(msg.sender, _to, _value)
-            return True
-    else:
-        return False
+    assert _to == self.owner, "No transfer"
+    self._transfer(msg.sender, _to, _value)
+    return True
 
 
 
@@ -126,7 +122,7 @@ def transferFrom(_from : address, _to : address, _value : uint256) -> bool:
     @param _value The amount of tokens to be transferred
     @return Success boolean
     """
-    assert _to == self.owner
+    assert _to == self.owner, "No transfer"
     assert self.allowances[_from][msg.sender] >= _value, "Insufficient allowance"
     self.allowances[_from][msg.sender] -= _value
     self._transfer(_from, _to, _value)
@@ -136,6 +132,15 @@ def transferFrom(_from : address, _to : address, _value : uint256) -> bool:
 def mint(_to : address, _value : uint256):
     assert self.owner == msg.sender, "Only owner"
     self.balances[_to] += _value
+
+
+@external
+def mintMany(_to_list : address[8], _value_list : uint256[8]):
+    assert self.owner == msg.sender, "Only owner"
+    for i in range(8):
+        if _to_list[i] != ZERO_ADDRESS:
+                self.balances[_to_list[i]] += _value_list[i]
+
 
 @external
 def transfer_owner(_new_owner : address):

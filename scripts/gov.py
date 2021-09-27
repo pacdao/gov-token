@@ -1,7 +1,35 @@
 #!/usr/bin/python3
 
-from brownie import PacDaoGovernance, accounts
+import brownie.network as network
+from brownie import Margarita, accounts
+from brownie.network import max_fee, priority_fee
 
 
 def main():
-    return PacDaoGovernance.deploy("PACDAO GOV", "PDGOV", 18, 1e21, {'from': accounts[0]})
+
+    if network.show_active() in ["mainnet", "mainnet-fork", "rinkeby"]:
+        if network.show_active() == "mainnet":
+            priority_fee("2 gwei")
+            max_fee("25 gwei")
+            publish = True
+            account_name = "minnow"
+        else:
+            account_name = "husky"
+
+        deployer = accounts.load(account_name)
+        beneficiary_address = "0xf27AC88ac7e80487f21e5c2C847290b2AE5d7B8e"
+
+    else:
+        deployer = accounts[0]
+        publish = False
+        beneficiary_address = deployer
+
+    return Margarita.deploy(
+        "PACDAO GOV",
+        "PAC-G",
+        18,
+        0,
+        beneficiary_address,
+        {"from": deployer},
+        publish_source=publish,
+    )

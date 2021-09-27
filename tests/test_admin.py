@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import brownie
 import pytest
+from brownie import ZERO_ADDRESS
 
 def test_owner_can_mint(accounts, token):
     init_bal = token.balanceOf(accounts[1])
@@ -69,4 +70,27 @@ def test_nonowner_cannot_transfer_owner(accounts, token):
     with brownie.reverts("Only owner"):
         token.transfer_owner(new_owner, {"from": accounts[2]})
    
+def test_mint_many_mints_many(accounts, token):
+    list1 = []
+    list2 = []
+    for i in range(8):
+        list1.append(accounts[i+1])
+        list2.append(100)
+    token.mintMany(list1, list2)
+    for i in range(8):
+        assert token.balanceOf(accounts[i+1]) == 100
+def test_partial_mint_many_mints_many(accounts, token):
+    list1 = []
+    list2 = []
+    for i in range(6):
+        list1.append(accounts[i+1])
+        list2.append(100)
+    list1.append(ZERO_ADDRESS)
+    list1.append(ZERO_ADDRESS)
+    list2.append(0)
+    list2.append(0)
+    token.mintMany(list1, list2)
+    for i in range(6):
+        assert token.balanceOf(accounts[i+1]) == 100
+
 
