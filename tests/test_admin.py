@@ -93,4 +93,8 @@ def test_partial_mint_many_mints_many(accounts, token):
     for i in range(6):
         assert token.balanceOf(accounts[i+1]) == 100
 
+def test_mint_increases_supply(accounts, token):
+    init = token.totalSupply()
+    token.mint(accounts[2], 1000, {'from': accounts[0]})
+    assert token.totalSupply() == 1000 + init
 

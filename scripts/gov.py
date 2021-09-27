@@ -10,7 +10,6 @@ def main():
     if network.show_active() in ["mainnet", "mainnet-fork", "rinkeby"]:
         if network.show_active() == "mainnet":
             priority_fee("2 gwei")
-            max_fee("25 gwei")
             publish = True
             account_name = "minnow"
         else:

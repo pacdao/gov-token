@@ -27,7 +27,6 @@ symbol: public(String[32])
 decimals: public(uint256)
 totalSupply: public(uint256)
 
-last_mint_time: HashMap[address, uint256]
 owner: address
 
 balances: HashMap[address, uint256]
@@ -132,7 +131,7 @@ def transferFrom(_from : address, _to : address, _value : uint256) -> bool:
 def mint(_to : address, _value : uint256):
     assert self.owner == msg.sender, "Only owner"
     self.balances[_to] += _value
-
+    self.totalSupply += _value
 
 @external
 def mintMany(_to_list : address[8], _value_list : uint256[8]):
