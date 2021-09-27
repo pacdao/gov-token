@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import brownie.network as network
-from brownie import Margarita, accounts
+from brownie import PacDaoGovernance, accounts
 from brownie.network import max_fee, priority_fee
 
 
@@ -14,6 +14,7 @@ def main():
             publish = True
             account_name = "minnow"
         else:
+            publish = True
             account_name = "husky"
 
         deployer = accounts.load(account_name)
@@ -24,7 +25,7 @@ def main():
         publish = False
         beneficiary_address = deployer
 
-    return Margarita.deploy(
+    return PacDaoGovernance.deploy(
         "PACDAO GOV",
         "PAC-G",
         18,
