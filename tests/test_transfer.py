@@ -26,7 +26,8 @@ def test_total_supply_not_affected(accounts, token):
     total_supply = token.totalSupply()
     amount = token.balanceOf(accounts[0])
 
-    token.transfer(accounts[1], amount, {'from': accounts[0]})
+    with brownie.reverts("No transfer"):
+        token.transfer(accounts[1], amount, {'from': accounts[0]})
 
     assert token.totalSupply() == total_supply
 
@@ -53,8 +54,9 @@ def test_transfer_full_balance(accounts, token):
 def test_transfer_zero_tokens(accounts, token):
     sender_balance = token.balanceOf(accounts[0])
     receiver_balance = token.balanceOf(accounts[1])
-
-    token.transfer(accounts[1], 0, {'from': accounts[0]})
+    
+    with brownie.reverts():
+        token.transfer(accounts[1], 0, {'from': accounts[0]})
 
     assert token.balanceOf(accounts[0]) == sender_balance
     assert token.balanceOf(accounts[1]) == receiver_balance

@@ -43,11 +43,11 @@ def test_cannot_transfer_to_nonowner(accounts, token):
     token.mint(accounts[1], 100, {'from': accounts[0]})
     recipient = accounts[2]
     init_bal = token.balanceOf(recipient)
-    tx = token.transfer(recipient, token.balanceOf(accounts[1]), {'from': accounts[1]})
-    assert tx.return_value == False
+    with brownie.reverts("No transfer"):
+        tx = token.transfer(recipient, token.balanceOf(accounts[1]), {'from': accounts[1]})
     assert token.balanceOf(recipient) == init_bal
 
-def test_can_transfer_from_owner(accounts, token):
+def test_can_transfer_to_owner(accounts, token):
     receiver_balance = token.balanceOf(accounts[0])
 
     token.mint(accounts[1], 100, {'from': accounts[0]})
