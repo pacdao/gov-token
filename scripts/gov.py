@@ -29,7 +29,6 @@ def main():
         "PACDAO GOV",
         "PAC-G",
         18,
-        0,
         beneficiary_address,
         {"from": deployer},
         publish_source=publish,

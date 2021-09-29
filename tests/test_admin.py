@@ -127,3 +127,11 @@ def test_mint_many_increases_supply(accounts, token):
     token.mintMany(list1, list2)
 
     assert token.totalSupply() == run_tot + init
+
+def test_mint_event_fires(accounts, token):
+    init = token.totalSupply()
+    tx = token.mint(accounts[2], 1000, {"from": accounts[0]})
+    assert len(tx.events) == 1
+    assert tx.events['Transfer'].values() == [ZERO_ADDRESS, accounts[2], 1000]
+
+

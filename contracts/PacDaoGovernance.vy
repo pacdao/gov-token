@@ -21,26 +21,22 @@ event Transfer:
     receiver: indexed(address)
     value: uint256
 
-
 name: public(String[64])
 symbol: public(String[32])
 decimals: public(uint256)
 totalSupply: public(uint256)
 
-owner: address
+owner: public(address)
 
 balances: HashMap[address, uint256]
 allowances: HashMap[address, HashMap[address, uint256]]
 
 @external
-def __init__(_name: String[64], _symbol: String[32], _decimals: uint256, _total_supply: uint256, _owner: address):
+def __init__(_name: String[64], _symbol: String[32], _decimals: uint256, _owner: address):
     self.name = _name
     self.symbol = _symbol
     self.decimals = _decimals
-    self.balances[msg.sender] = _total_supply
-    self.totalSupply = _total_supply
     self.owner = _owner
-    log Transfer(ZERO_ADDRESS, msg.sender, _total_supply)
 
 
 @view
@@ -127,19 +123,28 @@ def transferFrom(_from : address, _to : address, _value : uint256) -> bool:
     self._transfer(_from, _to, _value)
     return True
 
+# Mint Functions
+
+@internal
+def _mint(_to : address, _value : uint256):
+    self.balances[_to] += _value
+    self.totalSupply += _value
+    log Transfer(ZERO_ADDRESS, _to, _value)
+
+
+
 @external
 def mint(_to : address, _value : uint256):
     assert self.owner == msg.sender, "Only owner"
-    self.balances[_to] += _value
-    self.totalSupply += _value
+    self._mint(_to, _value)
 
 @external
 def mintMany(_to_list : address[8], _value_list : uint256[8]):
     assert self.owner == msg.sender, "Only owner"
     for i in range(8):
         if _to_list[i] != ZERO_ADDRESS:
-                self.balances[_to_list[i]] += _value_list[i]
-                self.totalSupply += _value_list[i]
+                self._mint(_to_list[i], _value_list[i])
+
 
 @external
 def transferOwner(_new_owner : address):

@@ -126,6 +126,8 @@ def test_insufficient_balance(accounts, token):
 
 
 def test_insufficient_approval(accounts, token):
+    token.mint(accounts[0], 10 ** 18, {'from': accounts[0]})
+
     balance = token.balanceOf(accounts[0])
 
     token.approve(accounts[1], balance - 1, {"from": accounts[0]})
@@ -162,6 +164,7 @@ def test_transfer_to_self(accounts, token):
 
 
 def test_transfer_to_self_no_approval(accounts, token):
+    token.mint(accounts[0], 10 ** 18, {'from': accounts[0]})
     amount = token.balanceOf(accounts[0])
 
     with brownie.reverts():
