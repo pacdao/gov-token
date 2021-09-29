@@ -12,4 +12,6 @@ def isolate(fn_isolation):
 
 @pytest.fixture(scope="module")
 def token(PacDaoGovernance, accounts):
-    return PacDaoGovernance.deploy("Test Token", "TST", 18, 1e21, accounts[0], {'from': accounts[0]})
+    return PacDaoGovernance.deploy(
+        "Test Token", "TST", 18, 1e21, accounts[0], {"from": accounts[0]}
+    )

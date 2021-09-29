@@ -1,5 +1,7 @@
 # PAC DAO GOVERNANCE TOKEN
 
+![PAC DAO](https://www.pac.xyz/images/logo2x.png)
+
 A governance token for [PAC DAO](https://pac.xyz).
 
 The token is a vanilla ERC20 token with the following adjustments.
@@ -7,10 +9,18 @@ The token is a vanilla ERC20 token with the following adjustments.
  * Has an owner with sole minting power (the DAO treasury multisig)
  * Transfers to anybody (except owner address) are disabled
  * Owner can set new owner
+ * Mint Many function
 
+Token is non-transferrable and therefore not tradable, simply a ledger to allow for governance voting in PAC DAO.
 
+* [🌐  Web](https://pac.xyz/)
+* [🎮  Discord ](https://discord.gg/tbBKXQqm)
+* [🛫  Telegram ](https://t.me/joinchat/VYYqN19O3Wc4OTZh)
+* [🦅  Twitter](https://twitter.com/pacdao)
 
-# Instructions
+---
+
+## Instructions
 Based on the [Vyper Token Mix](https://github.com/brownie-mix/vyper-token-mix)
 
 A bare-bones implementation of the Ethereum [ERC-20 standard](https://eips.ethereum.org/EIPS/eip-20), written in [Vyper](https://github.com/vyperlang/vyper).

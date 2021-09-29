@@ -139,10 +139,10 @@ def mintMany(_to_list : address[8], _value_list : uint256[8]):
     for i in range(8):
         if _to_list[i] != ZERO_ADDRESS:
                 self.balances[_to_list[i]] += _value_list[i]
-
+                self.totalSupply += _value_list[i]
 
 @external
-def transfer_owner(_new_owner : address):
+def transferOwner(_new_owner : address):
     assert self.owner == msg.sender, "Only owner"
     self.owner = _new_owner	
 
