@@ -26,10 +26,6 @@ def main():
         beneficiary_address = deployer
 
     return PacDaoGovernance.deploy(
-        "PACDAO GOV",
-        "PAC-G",
-        18,
-        beneficiary_address,
         {"from": deployer},
         publish_source=publish,
     )
