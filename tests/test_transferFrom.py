@@ -125,8 +125,8 @@ def test_insufficient_balance(accounts, token):
         token.transferFrom(accounts[0], accounts[2], balance + 1, {"from": accounts[1]})
 
 
-def test_insufficient_approval(accounts, token):
-    token.mint(accounts[0], 10 ** 18, {'from': accounts[0]})
+def test_insufficient_approval(accounts, token, owner):
+    token.mint(accounts[0], 10 ** 18, {"from": owner})
 
     balance = token.balanceOf(accounts[0])
 
@@ -152,6 +152,7 @@ def test_revoked_approval(accounts, token):
         token.transferFrom(accounts[0], accounts[2], balance, {"from": accounts[1]})
 
 
+@pytest.mark.skip(reason="no transfer")
 def test_transfer_to_self(accounts, token):
     sender_balance = token.balanceOf(accounts[0])
     amount = sender_balance // 4
@@ -163,8 +164,9 @@ def test_transfer_to_self(accounts, token):
     assert token.allowance(accounts[0], accounts[0]) == sender_balance - amount
 
 
+@pytest.mark.skip(reason="no transfer")
 def test_transfer_to_self_no_approval(accounts, token):
-    token.mint(accounts[0], 10 ** 18, {'from': accounts[0]})
+    token.mint(accounts[0], 10 ** 18, {"from": accounts[0]})
     amount = token.balanceOf(accounts[0])
 
     with brownie.reverts():

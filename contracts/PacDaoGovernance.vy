@@ -21,24 +21,23 @@ event Transfer:
     receiver: indexed(address)
     value: uint256
 
-name: public(String[64])
+name: public(String[64]) 
 symbol: public(String[32])
 decimals: public(uint256)
 totalSupply: public(uint256)
 
-owner: public(address)
+owner: public(address) 
 
 balances: HashMap[address, uint256]
 allowances: HashMap[address, HashMap[address, uint256]]
 
 @external
-def __init__(_name: String[64], _symbol: String[32], _decimals: uint256, _owner: address):
-    self.name = _name
-    self.symbol = _symbol
-    self.decimals = _decimals
-    self.owner = _owner
-
-
+def __init__():
+        self.name = "PACDAO GOV"
+        self.symbol = "PAC-G"
+        self.decimals = 18
+        self.totalSupply = 0
+        self.owner = 0xf27AC88ac7e80487f21e5c2C847290b2AE5d7B8e 
 @view
 @external
 def balanceOf(_owner: address) -> uint256:

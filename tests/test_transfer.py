@@ -63,7 +63,8 @@ def test_transfer_zero_tokens(accounts, token):
     assert token.balanceOf(accounts[1]) == receiver_balance
 
 
-def test_transfer_to_self(accounts, token):
+@pytest.mark.skip(reason="no transfer")
+def test_transfer_to_self(accounts, token, owner):
     sender_balance = token.balanceOf(accounts[0])
     amount = sender_balance // 4
 
