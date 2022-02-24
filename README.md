@@ -1,6 +1,6 @@
 # PAC DAO GOVERNANCE TOKEN
 
-![PAC DAO](https://www.pac.xyz/images/logo2x.png)
+![PAC DAO](https://cdn.substack.com/image/fetch/w_1456,c_limit,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fbucketeer-e05bbc84-baa3-437e-9518-adb32be77984.s3.amazonaws.com%2Fpublic%2Fimages%2F23ecc600-c85b-4438-8bc2-5dadfdf7aeb4_700x405.png)
 
 A governance token for [PAC DAO](https://pac.xyz).
 
@@ -11,7 +11,9 @@ The token is a vanilla ERC20 token with the following adjustments.
  * Owner can set new owner
  * Mint Many function
 
-Token is non-transferrable and therefore not tradable, simply a ledger to allow for governance voting in PAC DAO.
+Token is non-transferrable and therefore not tradable, simply a ledger to allow for governance voting in PAC DAO.  The full announcement [was made here](https://pacdao.substack.com/p/pac-governance-token).  If you are interested in earning the token please join the Discord. 
+
+View the Governance Token on Etherscan at [0x3459cfce9c0306eb1d5d0e2b78144c9fbd94c87b](https://etherscan.io/address/0x3459cfce9c0306eb1d5d0e2b78144c9fbd94c87b)
 
 * [🌐  Web](https://pac.xyz/)
 * [🎮  Discord ](https://discord.gg/tbBKXQqm)
