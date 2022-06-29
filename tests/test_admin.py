@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 import brownie
-import pytest
 from brownie import ZERO_ADDRESS
 
 
@@ -16,7 +15,7 @@ def test_nonowner_cannot_mint(accounts, token):
 
 
 def test_can_transfer_to_owner(accounts, token, owner):
-    token.mint(accounts[1], 100, {"from": accounts[0]})
+    token.mint(accounts[1], 100, {"from": owner})
 
     init_balance = token.balanceOf(owner)
     sender_balance = token.balanceOf(accounts[1])
@@ -40,21 +39,10 @@ def test_transfer_fails_on_imbalance(accounts, token, owner):
     token.mint(accounts[1], 100, {"from": owner})
     amount = token.balanceOf(accounts[1]) * 2
     with brownie.reverts("Insufficient balance"):
-        tx = token.transfer(owner, amount, {"from": accounts[1]})
+        token.transfer(owner, amount, {"from": accounts[1]})
 
 
-def test_cannot_transfer_to_nonowner(accounts, token, owner):
-    token.mint(accounts[1], 100, {"from": owner})
-    recipient = accounts[2]
-    init_bal = token.balanceOf(recipient)
-    with brownie.reverts("No transfer"):
-        tx = token.transfer(
-            recipient, token.balanceOf(accounts[1]), {"from": accounts[1]}
-        )
-    assert token.balanceOf(recipient) == init_bal
-
-
-def test_can_transfer_to_owner(accounts, token, owner):
+def test_can_transfer_from_owner(accounts, token, owner):
     receiver_balance = token.balanceOf(owner)
 
     token.mint(accounts[1], 100, {"from": owner})
@@ -120,7 +108,7 @@ def test_mint_many_increases_supply(accounts, token, owner):
     run_tot = 0
     for i in range(8):
         list1.append(accounts[i + 1])
-        amount = 100 * 10 ** 18 * i
+        amount = 100 * 10**18 * i
         list2.append(amount)
         run_tot += amount
 
@@ -130,7 +118,6 @@ def test_mint_many_increases_supply(accounts, token, owner):
 
 
 def test_mint_event_fires(accounts, token, owner):
-    init = token.totalSupply()
     tx = token.mint(accounts[2], 1000, {"from": owner})
     assert len(tx.events) == 1
     assert tx.events["Transfer"].values() == [ZERO_ADDRESS, accounts[2], 1000]

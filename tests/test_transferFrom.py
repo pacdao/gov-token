@@ -1,9 +1,7 @@
 #!/usr/bin/python3
 import brownie
-import pytest
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_sender_balance_decreases(accounts, token):
     sender_balance = token.balanceOf(accounts[0])
     amount = sender_balance // 4
@@ -14,7 +12,6 @@ def test_sender_balance_decreases(accounts, token):
     assert token.balanceOf(accounts[0]) == sender_balance - amount
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_receiver_balance_increases(accounts, token):
     receiver_balance = token.balanceOf(accounts[2])
     amount = token.balanceOf(accounts[0]) // 4
@@ -25,7 +22,6 @@ def test_receiver_balance_increases(accounts, token):
     assert token.balanceOf(accounts[2]) == receiver_balance + amount
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_caller_balance_not_affected(accounts, token):
     caller_balance = token.balanceOf(accounts[1])
     amount = token.balanceOf(accounts[0])
@@ -36,7 +32,6 @@ def test_caller_balance_not_affected(accounts, token):
     assert token.balanceOf(accounts[1]) == caller_balance
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_caller_approval_affected(accounts, token):
     approval_amount = token.balanceOf(accounts[0])
     transfer_amount = approval_amount // 4
@@ -49,7 +44,6 @@ def test_caller_approval_affected(accounts, token):
     )
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_receiver_approval_not_affected(accounts, token):
     approval_amount = token.balanceOf(accounts[0])
     transfer_amount = approval_amount // 4
@@ -61,7 +55,6 @@ def test_receiver_approval_not_affected(accounts, token):
     assert token.allowance(accounts[0], accounts[2]) == approval_amount
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_total_supply_not_affected(accounts, token):
     total_supply = token.totalSupply()
     amount = token.balanceOf(accounts[0])
@@ -72,7 +65,6 @@ def test_total_supply_not_affected(accounts, token):
     assert token.totalSupply() == total_supply
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_returns_true(accounts, token):
     amount = token.balanceOf(accounts[0])
     token.approve(accounts[1], amount, {"from": accounts[0]})
@@ -81,7 +73,6 @@ def test_returns_true(accounts, token):
     assert tx.return_value is True
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_transfer_full_balance(accounts, token):
     amount = token.balanceOf(accounts[0])
     receiver_balance = token.balanceOf(accounts[2])
@@ -93,7 +84,6 @@ def test_transfer_full_balance(accounts, token):
     assert token.balanceOf(accounts[2]) == receiver_balance + amount
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_transfer_zero_tokens(accounts, token):
     sender_balance = token.balanceOf(accounts[0])
     receiver_balance = token.balanceOf(accounts[2])
@@ -105,7 +95,6 @@ def test_transfer_zero_tokens(accounts, token):
     assert token.balanceOf(accounts[2]) == receiver_balance
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_transfer_zero_tokens_without_approval(accounts, token):
     sender_balance = token.balanceOf(accounts[0])
     receiver_balance = token.balanceOf(accounts[2])
@@ -116,7 +105,6 @@ def test_transfer_zero_tokens_without_approval(accounts, token):
     assert token.balanceOf(accounts[2]) == receiver_balance
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_insufficient_balance(accounts, token):
     balance = token.balanceOf(accounts[0])
 
@@ -126,7 +114,7 @@ def test_insufficient_balance(accounts, token):
 
 
 def test_insufficient_approval(accounts, token, owner):
-    token.mint(accounts[0], 10 ** 18, {"from": owner})
+    token.mint(accounts[0], 10**18, {"from": owner})
 
     balance = token.balanceOf(accounts[0])
 
@@ -152,7 +140,6 @@ def test_revoked_approval(accounts, token):
         token.transferFrom(accounts[0], accounts[2], balance, {"from": accounts[1]})
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_transfer_to_self(accounts, token):
     sender_balance = token.balanceOf(accounts[0])
     amount = sender_balance // 4
@@ -164,16 +151,13 @@ def test_transfer_to_self(accounts, token):
     assert token.allowance(accounts[0], accounts[0]) == sender_balance - amount
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_transfer_to_self_no_approval(accounts, token):
-    token.mint(accounts[0], 10 ** 18, {"from": accounts[0]})
     amount = token.balanceOf(accounts[0])
 
     with brownie.reverts():
         token.transferFrom(accounts[0], accounts[0], amount, {"from": accounts[0]})
 
 
-@pytest.mark.skip(reason="no transfer")
 def test_transfer_event_fires(accounts, token):
     amount = token.balanceOf(accounts[0])
 
