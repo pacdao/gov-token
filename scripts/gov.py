@@ -10,11 +10,14 @@ def main():
     if network.show_active() in ["mainnet", "mainnet-fork", "rinkeby"]:
         if network.show_active() == "mainnet":
             priority_fee("2 gwei")
-            max_fee("65 gwei")
+            max_fee("55 gwei")
             publish = True
             account_name = "minnow"
         else:
-            publish = True
+            if network.show_active() != "mainnet-fork":
+                publish = True
+            else:
+                publish = False
             account_name = "husky"
 
         deployer = accounts.load(account_name)
