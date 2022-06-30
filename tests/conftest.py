@@ -12,9 +12,9 @@ def isolate(fn_isolation):
 
 
 @pytest.fixture(scope="module")
-def token(PacGovFungible, accounts):
+def token(PacGovFungible, PacDaoGovernance, accounts):
     v2_token = PacGovFungible.deploy({"from": accounts[0]})
-    v1_token = Contract(v2_token.v1_token())
+    v1_token = Contract.from_abi("PacDaoGovernance", v2_token.v1_token(), PacDaoGovernance.abi)
     multisig = v1_token.owner()
     v1_token.transferOwner(v2_token, {"from": v1_token.owner()})
     v2_token.transferOwner(multisig, {"from": v2_token.owner()})
@@ -28,8 +28,8 @@ def owner(token):
 
 
 @pytest.fixture(scope="module")
-def v1_token(token):
-    return Contract(token.v1_token())
+def v1_token(token, PacDaoGovernance):
+    return Contract.from_abi("PacDaoGovernance", token.v1_token(), PacDaoGovernance.abi)
 
 
 @pytest.fixture(scope="module")
