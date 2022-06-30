@@ -140,7 +140,7 @@ def upgrade(_to : address):
     _balance: uint256 = self.v1_token.balanceOf(_to)
     assert self.v1_token.allowance(_to, self) >= _balance, "No Approval"
 
-    self.v1_token.transferFrom(_to, self, self.v1_token.balanceOf(_to))
+    self.v1_token.transferFrom(_to, self, _balance)
     self._mint(_to, _balance)
 
 @external
