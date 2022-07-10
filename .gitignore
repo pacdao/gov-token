@@ -1,0 +1,10 @@
+# brownie
+/build
+
+# python
+__pycache__
+
+# vim
+*.swp
+*.swo
+
