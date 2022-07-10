@@ -1,4 +1,4 @@
-# @version ^0.3.0
+# @version 0.3.3
 
 """
 @title Bare-bones Token implementation
@@ -6,8 +6,8 @@
         https://eips.ethereum.org/EIPS/eip-20
 """
 
-from vyper.interfaces import ERC20
 
+from vyper.interfaces import ERC20
 implements: ERC20
 
 
@@ -31,7 +31,7 @@ owner: public(address)
 balances: HashMap[address, uint256]
 allowances: HashMap[address, HashMap[address, uint256]]
 
-v1_token: public(ERC20)
+minters: public(DynArray[address, 16])
 
 @external
 def __init__():
@@ -40,7 +40,6 @@ def __init__():
         self.decimals = 18
         self.totalSupply = 0
         self.owner = 0xf27AC88ac7e80487f21e5c2C847290b2AE5d7B8e 
-        self.v1_token = ERC20(0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B)
 
 @view
 @external
@@ -127,40 +126,53 @@ def transferFrom(_from : address, _to : address, _value : uint256) -> bool:
 # Mint Functions
 
 @internal
-def _mint(_to : address, _value : uint256):
-    self.balances[_to] += _value
-    self.totalSupply += _value
-    log Transfer(ZERO_ADDRESS, _to, _value)
-
-
-
-@external
-def upgrade(_to : address):
-    assert self.v1_token.balanceOf(_to) > 0, "No balance"
-    _balance: uint256 = self.v1_token.balanceOf(_to)
-    assert self.v1_token.allowance(_to, self) >= _balance, "No Approval"
-
-    self.v1_token.transferFrom(_to, self, self.v1_token.balanceOf(_to))
-    self._mint(_to, _balance)
-
-@external
-def mint(_to : address, _value : uint256):
-    assert self.owner == msg.sender, "Only owner"
-    if _to != ZERO_ADDRESS:
-        self._mint(_to, _value)
+def _mint(_to : address, _amount : uint256):
+    self.balances[_to] += _amount
+    self.totalSupply += _amount
+    log Transfer(ZERO_ADDRESS, _to, _amount)
 
 
 @external
-def mintMany(_to_list : address[8], _value_list : uint256[8]):
-    assert self.owner == msg.sender, "Only owner"
+def mint(to : address, amount : uint256):
+    assert msg.sender == self.owner or msg.sender in self.minters, "Only minters"
+    if to != ZERO_ADDRESS:
+        self._mint(to, amount)
+
+
+@external
+def mint_many(_to_list : address[8], _value_list : uint256[8]):
+    assert self.owner == msg.sender or msg.sender in self.minters, "Only owner"
     for i in range(8):
         if _to_list[i] != ZERO_ADDRESS:
                 self._mint(_to_list[i], _value_list[i])
 
 
+
 @external
-def transferOwner(_new_owner : address):
+def transfer_owner(_new_owner : address):
     assert self.owner == msg.sender, "Only owner"
     self.owner = _new_owner	
+
+@external
+def add_minter(new_addr : address):
+    assert self.owner == msg.sender, "Only owner"
+    assert new_addr not in self.minters, "Already exists"
+    assert len(self.minters) < 16, "Too many minters"
+    self.minters.append(new_addr)
+	
+@external
+def revoke_minter(kill_addr: address):
+    assert self.owner == msg.sender, "Only owner"
+    assert kill_addr in self.minters, "Addr not found"
+    new_minters : DynArray[address, 16] = []
+
+    for i in range(16):
+        if i < len(self.minters):
+            if self.minters[i] != kill_addr and self.minters[i] != ZERO_ADDRESS:
+                new_minters.append(self.minters[i])
+    self.minters = new_minters
+
+
+
 
 
