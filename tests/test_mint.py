@@ -3,9 +3,15 @@ from brownie import accounts
 from brownie.test import strategy
 
 
+def test_no_upgrade_without_approval(token, v1_token, v1_hodler_addr, minter):
+    assert v1_token.allowance(v1_hodler_addr, token) == 0
+    with brownie.reverts():
+        minter.upgrade(v1_hodler_addr, {'from': v1_hodler_addr})
+
 
 def test_initial_balance_empty(token, v1_hodler):
     assert token.balanceOf(v1_hodler) == 0
+
 
 
 def test_holders_of_v1_can_upgrade(token, v1_token, v1_hodler, minter):
@@ -23,7 +29,6 @@ def test_non_hodler_of_v1_cannot_upgrade(token, v1_token, minter):
     with brownie.reverts():
         minter.upgrade(accounts[0], {"from": accounts[0]})
     assert token.balanceOf(accounts[1]) == 0
-
 
 def test_upgrading_kills_v1_stake(token, v1_hodler, v1_token, minter):
     minter.upgrade(v1_hodler, {"from": v1_hodler})

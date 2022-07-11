@@ -121,3 +121,23 @@ def test_mint_event_fires(accounts, token, owner):
     tx = token.mint(accounts[2], 1000, {"from": owner})
     assert len(tx.events) == 1
     assert tx.events["Transfer"].values() == [ZERO_ADDRESS, accounts[2], 1000]
+
+
+def test_mint_many_events_fire(accounts, token, owner):
+    tx = token.mint_many(accounts[0:8], [1000]*8, {"from": owner})
+
+    assert len(tx.events) == 8
+
+
+
+def test_cannot_mint_to_zero_addr(token, owner):
+    init_supply = token.totalSupply()
+    tx = token.mint(ZERO_ADDRESS, 1000, {'from': owner})
+    assert len(tx.events) == 0
+    assert token.totalSupply() == init_supply
+
+def test_cannot_mint_many_to_zero_addrs(token, owner):
+    init_supply = token.totalSupply()
+    tx = token.mint_many([ZERO_ADDRESS]*8, [1000]*8, {'from': owner})
+    assert len(tx.events) == 0
+    assert token.totalSupply() == init_supply

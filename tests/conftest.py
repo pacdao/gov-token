@@ -38,7 +38,10 @@ def v1_token():
 
 
 @pytest.fixture(scope="module")
-def v1_hodler(v1_token, minter):
-    hodler = "0x6215181b1f33af4f0b60125017e72d3615dcd6e3"
-    v1_token.approve(minter, v1_token.balanceOf(hodler), {"from": hodler})
-    return hodler
+def v1_hodler_addr():
+    return "0x6215181b1f33af4f0b60125017e72d3615dcd6e3"
+
+@pytest.fixture(scope="module")
+def v1_hodler(v1_token, minter, v1_hodler_addr):
+    v1_token.approve(minter, v1_token.balanceOf(v1_hodler_addr), {"from": v1_hodler_addr})
+    return v1_hodler_addr
