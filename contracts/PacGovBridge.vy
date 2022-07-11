@@ -21,12 +21,12 @@ def __init__(gov_token : address):
     self.gov_token = ERC20(gov_token)
 
 @external
-def upgrade(_to : address):
-    assert self.v1_token.balanceOf(_to) > 0, "No balance"
-    _balance: uint256 = self.v1_token.balanceOf(_to)
-    assert self.v1_token.allowance(_to, self) >= _balance, "No Approval"
+def upgrade(to_addr : address):
+    assert self.v1_token.balanceOf(to_addr) > 0, "No balance"
+    _balance: uint256 = self.v1_token.balanceOf(to_addr)
+    assert self.v1_token.allowance(to_addr, self) >= _balance, "No Approval"
 
-    self.v1_token.transferFrom(_to, self, self.v1_token.balanceOf(_to))
-    self.gov_token.mint(_to, _balance)
+    self.v1_token.transferFrom(to_addr, self, self.v1_token.balanceOf(to_addr))
+    self.gov_token.mint(to_addr, _balance)
 
 

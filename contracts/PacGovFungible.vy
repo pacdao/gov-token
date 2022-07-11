@@ -127,6 +127,12 @@ def transferFrom(_from : address, _to : address, _value : uint256) -> bool:
 
 @internal
 def _mint(_to : address, _amount : uint256):
+    """
+    @notice Internal Mint Function
+    @dev Update mint
+    @param _to The address to receive tokens
+    @param _amount Amount of tokens to mint
+    """
     self.balances[_to] += _amount
     self.totalSupply += _amount
     log Transfer(ZERO_ADDRESS, _to, _amount)
@@ -134,27 +140,50 @@ def _mint(_to : address, _amount : uint256):
 
 @external
 def mint(to : address, amount : uint256):
+    """
+    @notice Mint Function
+    @dev Mint function for accounts with minter role
+    @param to The address to receive tokens
+    @param amount Amount of tokens to mint
+    """
     assert msg.sender == self.owner or msg.sender in self.minters, "Only minters"
     if to != ZERO_ADDRESS:
         self._mint(to, amount)
 
 
 @external
-def mint_many(_to_list : address[8], _value_list : uint256[8]):
+def mint_many(to_list : address[8], value_list : uint256[8]):
+    """
+    @notice Mint in packs of Eight
+    @dev Sender must have minter role, accepts batches of eight with ZERO_ADDRESS as empty
+    @param to_list Up to eight addresses to receive tokens (ZERO_ADDR to skip)
+    @param value_list Up to eight indexed values of tokens to mint
+    """
     assert self.owner == msg.sender or msg.sender in self.minters, "Only owner"
     for i in range(8):
-        if _to_list[i] != ZERO_ADDRESS:
-                self._mint(_to_list[i], _value_list[i])
-
+        if to_list[i] != ZERO_ADDRESS:
+            self._mint(to_list[i], value_list[i])
 
 
 @external
-def transfer_owner(_new_owner : address):
+def transfer_owner(new_owner : address):
+    """
+    @notice Set contract owner 
+    @dev Sender must be current owner 
+    @param new_owner New contract owner address 
+    """
+
     assert self.owner == msg.sender, "Only owner"
-    self.owner = _new_owner	
+    self.owner = new_owner	
 
 @external
 def add_minter(new_addr : address):
+    """
+    @notice Add address as minter role
+    @dev Sender must be current owner, fails on existing minter address
+    @param new_addr New address to receive minting privilege
+    """
+
     assert self.owner == msg.sender, "Only owner"
     assert new_addr not in self.minters, "Already exists"
     assert len(self.minters) < 16, "Too many minters"
@@ -162,6 +191,12 @@ def add_minter(new_addr : address):
 	
 @external
 def revoke_minter(kill_addr: address):
+    """
+    @notice Remove address from minter role
+    @dev Sender must be current owner, fails if address doesn't exist
+    @param kill_addr New address to receive minting privilege
+    """
+
     assert self.owner == msg.sender, "Only owner"
     assert kill_addr in self.minters, "Addr not found"
     new_minters : DynArray[address, 16] = []
@@ -171,8 +206,5 @@ def revoke_minter(kill_addr: address):
             if self.minters[i] != kill_addr and self.minters[i] != ZERO_ADDRESS:
                 new_minters.append(self.minters[i])
     self.minters = new_minters
-
-
-
 
 
