@@ -136,6 +136,11 @@ def test_cannot_mint_to_zero_addr(token, owner):
     assert token.totalSupply() == init_supply
 
 
+def test_cannnot_mint_many_from_nonminter(token, accounts):
+    with brownie.reverts("Only minters"):
+        token.mint_many([accounts[0]] * 8, [1000] * 8, {"from": accounts[1]})
+
+
 def test_cannot_mint_many_to_zero_addrs(token, owner):
     init_supply = token.totalSupply()
     tx = token.mint_many([ZERO_ADDRESS] * 8, [1000] * 8, {"from": owner})

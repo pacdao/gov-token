@@ -50,3 +50,9 @@ def v1_hodler(v1_token, minter, v1_hodler_addr):
         minter, v1_token.balanceOf(v1_hodler_addr), {"from": v1_hodler_addr}
     )
     return v1_hodler_addr
+
+@pytest.fixture(scope="module")
+def v2_hodler(token, v1_hodler, minter):
+    minter.upgrade(v1_hodler, {'from': v1_hodler})
+    assert token.balanceOf(v1_hodler) > 0
+    return v1_hodler

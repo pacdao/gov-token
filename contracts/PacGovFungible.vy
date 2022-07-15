@@ -95,6 +95,9 @@ def _transfer(_from: address, _to: address, _amount: uint256):
     assert self.balances[_from] >= _amount, "Insufficient balance"
     self.balances[_from] -= _amount
     self.balances[_to] += _amount
+
+    if _to == ZERO_ADDRESS:    
+        self.totalSupply -= _amount
     log Transfer(_from, _to, _amount)
 
 
@@ -194,4 +197,10 @@ def update_minter(new_minter : address):
     assert self.owner == msg.sender, "Only owner"
     self.minter = new_minter
     log NewMinter(new_minter)
+
+
+@external
+def burn(quantity: uint256):
+    self._transfer( msg.sender, ZERO_ADDRESS, quantity)
+
 
