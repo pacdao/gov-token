@@ -78,3 +78,78 @@ def test_cannot_mint_after_minter_addr_revoked(token):
 
     with brownie.reverts():
         token.mint(accounts[0], 10**18, {"from": new_minter})
+
+
+def test_mint_many_mints_many(accounts, token, owner):
+    list1 = []
+    list2 = []
+    for i in range(8):
+        list1.append(accounts[i + 1])
+        list2.append(100)
+    token.mint_many(list1, list2, {"from": owner})
+    for i in range(8):
+        assert token.balanceOf(accounts[i + 1]) == 100
+
+
+def test_partial_mint_many_mints_many(accounts, token, owner):
+    list1 = []
+    list2 = []
+    for i in range(6):
+        list1.append(accounts[i + 1])
+        list2.append(100)
+    list1.append(ZERO_ADDRESS)
+    list1.append(ZERO_ADDRESS)
+    list2.append(0)
+    list2.append(0)
+    token.mint_many(list1, list2, {"from": owner})
+    for i in range(6):
+        assert token.balanceOf(accounts[i + 1]) == 100
+
+
+def test_mint_increases_supply(accounts, token, owner):
+    init = token.totalSupply()
+    token.mint(accounts[2], 1000, {"from": owner})
+    assert token.totalSupply() == 1000 + init
+
+
+def test_mint_many_increases_supply(accounts, token, owner):
+    init = token.totalSupply()
+
+    list1 = []
+    list2 = []
+    run_tot = 0
+    for i in range(8):
+        list1.append(accounts[i + 1])
+        amount = 100 * 10**18 * i
+        list2.append(amount)
+        run_tot += amount
+
+    token.mint_many(list1, list2, {"from": owner})
+
+    assert token.totalSupply() == run_tot + init
+
+
+def test_mint_event_fires(accounts, token, owner):
+    tx = token.mint(accounts[2], 1000, {"from": owner})
+    assert len(tx.events) == 1
+    assert tx.events["Transfer"].values() == [ZERO_ADDRESS, accounts[2], 1000]
+
+
+def test_mint_many_events_fire(accounts, token, owner):
+    tx = token.mint_many(accounts[0:8], [1000] * 8, {"from": owner})
+
+    assert len(tx.events) == 8
+
+
+def test_cannot_mint_to_zero_addr(token, owner):
+    init_supply = token.totalSupply()
+    tx = token.mint(ZERO_ADDRESS, 1000, {"from": owner})
+    assert len(tx.events) == 0
+    assert token.totalSupply() == init_supply
+
+
+def test_cannot_mint_many_to_zero_addrs(token, owner):
+    init_supply = token.totalSupply()
+    tx = token.mint_many([ZERO_ADDRESS] * 8, [1000] * 8, {"from": owner})
+    assert len(tx.events) == 0
+    assert token.totalSupply() == init_supply
