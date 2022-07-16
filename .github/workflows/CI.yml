@@ -45,6 +45,7 @@ jobs:
         brownie compile
     - name: Lint
       run: |
+        black --version
         black . --check
     - name: Test coverage
       run: |
