@@ -37,17 +37,16 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
     - uses: actions/cache@v2
       with:
-        path: |
-          ${{ env.pythonLocation }}
-          ~/.vvm
-          ~/.npm
-        key: ${{ env.pythonLocation }}-pip-${{ hashFiles('requirements.txt', '~/.vvm/*', '~/.npm/*') }}
+        path: ~/.vvm
+        key: vyper-cache
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
