@@ -80,4 +80,3 @@ def test_transfer_fails_on_imbalance(accounts, token, owner):
     amount = token.balanceOf(accounts[1]) * 2
     with brownie.reverts("Insufficient balance"):
         token.transfer(owner, amount, {"from": accounts[1]})
-
