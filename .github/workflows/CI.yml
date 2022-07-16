@@ -33,10 +33,14 @@ jobs:
     - uses: actions/checkout@v2
       with:
         clean: true
-    - name: Setup Python Dependencies 
+    - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
     - uses: actions/cache@v2
       with:
         path: |
@@ -44,10 +48,11 @@ jobs:
           ~/.vvm
           ~/.npm
         key: ${{ env.pythonLocation }}-pip-${{ hashFiles('requirements.txt', '~/.vvm/*', '~/.npm/*') }}
-    - name: Install requirements
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        npm install -g ganache-cli@6.12.2
     - name: Compile smart contracts
       run: |
         brownie compile
@@ -55,11 +60,6 @@ jobs:
     #   run: |
     #     black --version
     #     black . --check
-    - name: Setup Node Dependencies
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-      run: npm install -g ganache-cli@6.12.2
     - name: Test coverage
       run: |
         brownie test --network mainnet-fork --coverage
