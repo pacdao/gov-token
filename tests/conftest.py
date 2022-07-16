@@ -35,8 +35,12 @@ def minter(token, PacGovBridge, owner, v1_token):
 
 
 @pytest.fixture(scope="module")
-def v1_token():
-    return Contract("0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B")
+def v1_token(PacDaoGovernance):
+    return Contract.from_abi(
+        "PacDaoGovernance",
+        "0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B",
+        PacDaoGovernance.abi,
+    )
 
 
 @pytest.fixture(scope="module")
