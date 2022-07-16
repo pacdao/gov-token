@@ -73,3 +73,11 @@ def test_transfer_event_fires(accounts, token):
 
     assert len(tx.events) == 1
     assert tx.events["Transfer"].values() == [accounts[0], accounts[1], amount]
+
+
+def test_transfer_fails_on_imbalance(accounts, token, owner):
+    token.mint(accounts[1], 100, {"from": owner})
+    amount = token.balanceOf(accounts[1]) * 2
+    with brownie.reverts("Insufficient balance"):
+        token.transfer(owner, amount, {"from": accounts[1]})
+
