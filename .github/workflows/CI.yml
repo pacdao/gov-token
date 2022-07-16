@@ -49,10 +49,10 @@ jobs:
     - name: Compile smart contracts
       run: |
         brownie compile
-    - name: Lint
-      run: |
-        black --version
-        black . --check
+    # - name: Lint
+    #   run: |
+    #     black --version
+    #     black . --check
     - name: Test coverage
       run: |
         brownie test --network mainnet-fork --coverage
