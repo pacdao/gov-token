@@ -74,10 +74,7 @@ def allowance(owner : address, spender : address) -> uint256:
 def approve(spender : address, amount : uint256) -> bool:
     """
     @notice Approve an address to spend the specified amount of tokens on behalf of msg.sender
-    @dev Beware that changing an allowance with this method brings the risk that someone may use both the old
-         and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
-         race condition is to first reduce the spender's allowance to 0 and set the desired amount afterwards:
-         https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+    @dev Beware that changing an allowance with this method brings the risk that someone may use both the old and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this race condition is to first reduce the spender's allowance to 0 and set the desired amount afterwards: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
     @param spender The address which will spend the funds.
     @param amount The amount of tokens to be spent.
     @return Success boolean
@@ -201,6 +198,34 @@ def update_minter(new_minter : address):
 
 @external
 def burn(quantity: uint256):
+    """
+    @notice Burn tokens
+    @dev Transfer to ZERO_ADDRESS, throws if invlaid amount
+    @param quantity Number of tokens to burn from sender
+    """
     self._transfer( msg.sender, ZERO_ADDRESS, quantity)
 
+
+@external
+def claim():
+    """
+    @notice Deliver any deposited funds to owner
+    """
+    send(self.owner, self.balance)
+
+
+@external
+def claim_erc20(token_addr : address):
+    """
+    @notice Deliver any deposited ERC20 to owner
+    @param token_addr Address of ERC20 token to claim
+    """
+    assert msg.sender == self.owner, "Only owner"
+    ERC20(token_addr).transfer( self.owner, ERC20(token_addr).balanceOf(self))
+
+
+@external
+@payable
+def __default__():
+    pass
 

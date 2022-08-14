@@ -78,3 +78,9 @@ def test_cannot_mint_after_minter_addr_revoked(token):
 
     with brownie.reverts():
         token.mint(accounts[0], 10**18, {"from": new_minter})
+
+
+def test_cannot_mint_from_random_addr(token, accounts):
+    assert token.owner() != accounts[0]
+    with brownie.reverts():
+        token.mint(accounts[0], 10 ** 18, {'from': accounts[0]})

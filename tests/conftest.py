@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import pytest
-from brownie import Contract
+from brownie import Contract, network, PacDaoGovernance, accounts
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -27,7 +27,7 @@ def owner(token):
 
 @pytest.fixture(scope="module")
 def minter(token, PacGovBridge, owner, v1_token):
-    bridge = PacGovBridge.deploy(token, {"from": owner})
+    bridge = PacGovBridge.deploy(token, v1_token.address,  {"from": owner})
     token.update_minter(bridge, {"from": owner})
     v1_token.transferOwner(bridge, {"from": v1_token.owner()})
 
@@ -35,8 +35,13 @@ def minter(token, PacGovBridge, owner, v1_token):
 
 
 @pytest.fixture(scope="module")
-def v1_token():
-    return Contract("0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B")
+def v1_token(v1_hodler_addr):
+    if network.show_active() == 'development':
+        x = PacDaoGovernance.deploy({'from': accounts[0]})
+        x.mint(v1_hodler_addr, 10 ** 18, {'from': x.owner()})
+        return x
+    else:
+        return Contract("0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B")
 
 
 @pytest.fixture(scope="module")
@@ -53,6 +58,12 @@ def v1_hodler(v1_token, minter, v1_hodler_addr):
 
 @pytest.fixture(scope="module")
 def v2_hodler(token, v1_hodler, minter):
+    
     minter.upgrade(v1_hodler, {'from': v1_hodler})
     assert token.balanceOf(v1_hodler) > 0
     return v1_hodler
+
+@pytest.fixture(scope="module")
+def dummy_token(accounts, PacGovFungible):
+    dummy_token = PacGovFungible.deploy({'from': accounts[0]})
+    return dummy_token
