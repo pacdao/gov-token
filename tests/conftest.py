@@ -41,7 +41,11 @@ def v1_token(v1_hodler_addr):
         x.mint(v1_hodler_addr, 10 ** 18, {'from': x.owner()})
         return x
     else:
-        return Contract("0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B")
+        return Contract.from_abi(
+            "PacDaoGovernance",
+            "0x3459cfCe9c0306EB1D5D0e2b78144C9FBD94c87B",
+            PacDaoGovernance.abi,
+        )
 
 
 @pytest.fixture(scope="module")
@@ -56,10 +60,10 @@ def v1_hodler(v1_token, minter, v1_hodler_addr):
     )
     return v1_hodler_addr
 
+
 @pytest.fixture(scope="module")
 def v2_hodler(token, v1_hodler, minter):
-    
-    minter.upgrade(v1_hodler, {'from': v1_hodler})
+    minter.upgrade(v1_hodler, {"from": v1_hodler})
     assert token.balanceOf(v1_hodler) > 0
     return v1_hodler
 
