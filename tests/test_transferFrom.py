@@ -114,7 +114,7 @@ def test_insufficient_balance(accounts, token):
 
 
 def test_insufficient_approval(accounts, token, owner):
-    token.mint(accounts[0], 10**18, {"from": owner})
+    token.mint(accounts[0], 10 ** 18, {"from": owner})
 
     balance = token.balanceOf(accounts[0])
 
