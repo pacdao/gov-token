@@ -63,9 +63,9 @@ def test_new_minter_can_mint(token):
     assert token.minter() == new_minter
 
     init_bal = token.balanceOf(accounts[0])
-    token.mint(accounts[0], 10 ** 18, {"from": new_minter})
+    token.mint(accounts[0], 10**18, {"from": new_minter})
 
-    assert token.balanceOf(accounts[0]) == init_bal + 10 ** 18
+    assert token.balanceOf(accounts[0]) == init_bal + 10**18
 
 
 def test_cannot_mint_after_minter_addr_revoked(token):
@@ -77,13 +77,13 @@ def test_cannot_mint_after_minter_addr_revoked(token):
     assert token.minter() == accounts[1]
 
     with brownie.reverts():
-        token.mint(accounts[0], 10 ** 18, {"from": new_minter})
+        token.mint(accounts[0], 10**18, {"from": new_minter})
 
 
 def test_cannot_mint_from_random_addr(token, accounts):
     assert token.owner() != accounts[0]
     with brownie.reverts():
-        token.mint(accounts[0], 10 ** 18, {"from": accounts[0]})
+        token.mint(accounts[0], 10**18, {"from": accounts[0]})
 
 
 def test_mint_many_mints_many(accounts, token, owner):
@@ -126,7 +126,7 @@ def test_mint_many_increases_supply(accounts, token, owner):
     run_tot = 0
     for i in range(8):
         list1.append(accounts[i + 1])
-        amount = 100 * 10 ** 18 * i
+        amount = 100 * 10**18 * i
         list2.append(amount)
         run_tot += amount
 

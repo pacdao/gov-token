@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
+
 import pytest
-from brownie import Contract, network, PacDaoGovernance, accounts
+from brownie import Contract, PacDaoGovernance, accounts, network
+from brownie.network.state import TxHistory
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -38,7 +40,7 @@ def minter(token, PacGovBridge, owner, v1_token):
 def v1_token(v1_hodler_addr):
     if network.show_active() == "development":
         x = PacDaoGovernance.deploy({"from": accounts[0]})
-        x.mint(v1_hodler_addr, 10 ** 18, {"from": x.owner()})
+        x.mint(v1_hodler_addr, 10**18, {"from": x.owner()})
         return x
     else:
         return Contract.from_abi(
