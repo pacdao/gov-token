@@ -38,6 +38,7 @@ def upgrade(to_addr: address):
 
 
 @external
+@nonreentrant("lock")
 def withdraw_erc20(coin: address, amount: uint256):
     """
     @notice Withdraw ERC20 tokens accidentally sent to contract
