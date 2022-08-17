@@ -217,6 +217,7 @@ def update_minter(new_minter: address):
 
 
 @external
+@nonreentrant("lock")
 def claim_erc20(token_addr: address):
     """
     @notice Deliver any deposited ERC20 to owner
